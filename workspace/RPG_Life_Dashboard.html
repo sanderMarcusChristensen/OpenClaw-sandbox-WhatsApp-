@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RPG Life Dashboard</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #282c34;
+            color: #ffffff;
+            text-align: center;
+        }
+        .stat {
+            border: 1px solid #555;
+            padding: 10px;
+            margin: 10px;
+            border-radius: 8px;
+            background-color: #333;
+        }
+        .progress-bar {
+            background-color: #555;
+            border-radius: 5px;
+            overflow: hidden;
+            margin-top: 10px;
+        }
+        .progress {
+            height: 20px;
+            background-color: #4caf50;
+            width: 0%;
+            transition: width 0.5s;
+        }
+        button {
+            margin: 10px;
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            background-color: #4caf50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <h1>RPG Life Dashboard</h1>
+    <div id="stats-container">
+        <div class="stat" id="strength">
+            <h3>Strength</h3>
+            <p>Level: <span class="level">1</span></p>
+            <div class="progress-bar">
+                <div class="progress"></div>
+            </div>
+            <p>XP: <span class="xp">0</span>/100</p>
+        </div>
+        <div class="stat" id="intelligence">
+            <h3>Intelligence</h3>
+            <p>Level: <span class="level">1</span></p>
+            <div class="progress-bar">
+                <div class="progress"></div>
+            </div>
+            <p>XP: <span class="xp">0</span>/100</p>
+        </div>
+        <div class="stat" id="creativity">
+            <h3>Creativity</h3>
+            <p>Level: <span class="level">1</span></p>
+            <div class="progress-bar">
+                <div class="progress"></div>
+            </div>
+            <p>XP: <span class="xp">0</span>/100</p>
+        </div>
+        <div class="stat" id="social">
+            <h3>Social</h3>
+            <p>Level: <span class="level">1</span></p>
+            <div class="progress-bar">
+                <div class="progress"></div>
+            </div>
+            <p>XP: <span class="xp">0</span>/100</p>
+        </div>
+    </div>
+    <div>
+        <button onclick="addXP('strength', 20)">Exercised 30min</button>
+        <button onclick="addXP('intelligence', 25)">Read 1 hour</button>
+        <button onclick="addXP('creativity', 20)">Created something</button>
+        <button onclick="addXP('social', 15)">Socialized</button>
+    </div>
+    <h3>Total Character Level: <span id="total-level">4</span></h3>
+    <button onclick="resetProgress()">Reset</button>
+    <script>
+        const stats = {
+            strength: { level: 1, xp: 0, xpNeeded: 100 },
+            intelligence: { level: 1, xp: 0, xpNeeded: 100 },
+            creativity: { level: 1, xp: 0, xpNeeded: 100 },
+            social: { level: 1, xp: 0, xpNeeded: 100 }
+        };
+        
+        function addXP(statName, xp) {
+            const stat = stats[statName];
+            stat.xp += xp;
+            if (stat.xp >= stat.xpNeeded) {
+                stat.xp -= stat.xpNeeded;
+                stat.level++;
+                stat.xpNeeded += 100;
+                alert(`Level Up! ${statName.charAt(0).toUpperCase() + statName.slice(1)} is now level ${stat.level}!`);
+            }
+            updateDisplay(statName);
+            saveProgress();
+        }
+
+        function updateDisplay(statName) {
+            const statDiv = document.getElementById(statName);
+            const stat = stats[statName];
+            const progressPercent = (stat.xp / stat.xpNeeded) * 100;
+            statDiv.querySelector('.level').textContent = stat.level;
+            statDiv.querySelector('.xp').textContent = stat.xp;
+            statDiv.querySelector('.progress').style.width = `${progressPercent}%`;
+            updateTotalLevel();
+        }
+
+        function updateTotalLevel() {
+            const totalLevel = Object.values(stats).reduce((acc, stat) => acc + stat.level, 0);
+            document.getElementById('total-level').textContent = totalLevel;
+        }
+
+        function saveProgress() {
+            localStorage.setItem('rpgStats', JSON.stringify(stats));
+        }
+
+        function loadProgress() {
+            const savedStats = JSON.parse(localStorage.getItem('rpgStats'));
+            if (savedStats) {
+                Object.assign(stats, savedStats);
+                for (let statName in stats) {
+                    updateDisplay(statName);
+                }
+            }
+        }
+
+        function resetProgress() {
+            for (let statName in stats) {
+                stats[statName] = { level: 1, xp: 0, xpNeeded: 100 };
+                updateDisplay(statName);
+            }
+            saveProgress();
+        }
+
+        window.onload = loadProgress;
+    </script>
+</body>
+</html>

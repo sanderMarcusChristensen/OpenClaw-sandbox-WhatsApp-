@@ -1,0 +1,67 @@
+services:
+  openclaw-gateway:
+    image: ghcr.io/openclaw/openclaw:2026.2.9
+    container_name: openclaw-gateway
+    env_file: .env
+
+    # --- Security hardening ---
+    user: "${HOST_UID:-1000}:${HOST_GID:-1000}"
+    read_only: true
+    init: true
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+
+    environment:
+      OPENCLAW_GATEWAY_TOKEN: ${OPENCLAW_GATEWAY_TOKEN}
+      HOME: /home/node
+      TERM: xterm-256color
+
+    # Kun disse 2 mounts: config + workspace
+    volumes:
+      - ./config:/home/node/.openclaw
+      - ./workspace:/home/node/.openclaw/workspace
+
+    # read_only=true kræver et skrivbart tmp område
+    tmpfs:
+      - /tmp
+
+    restart: unless-stopped
+
+    command: [
+      "node", "dist/index.js", "gateway",
+      "--bind", "${OPENCLAW_GATEWAY_BIND:-lan}",
+      "--port", "${OPENCLAW_GATEWAY_PORT:-18789}"
+    ]
+
+  openclaw-cli:
+    image: ghcr.io/openclaw/openclaw:2026.2.9
+    container_name: openclaw-cli
+    env_file: .env
+
+    # CLI er kun til at køre kommandoer, ikke en permanent service
+    user: "${HOST_UID:-1000}:${HOST_GID:-1000}"
+    read_only: true
+    init: true
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+
+    entrypoint: ["node", "dist/index.js"]
+
+    environment:
+      OPENCLAW_GATEWAY_TOKEN: ${OPENCLAW_GATEWAY_TOKEN}
+      HOME: /home/node
+      TERM: xterm-256color
+
+    volumes:
+      - ./config:/home/node/.openclaw
+      - ./workspace:/home/node/.openclaw/workspace
+
+    tmpfs:
+      - /tmp
+
+    stdin_open: true
+    tty: true

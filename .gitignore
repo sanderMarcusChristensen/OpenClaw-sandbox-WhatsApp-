@@ -1,0 +1,9 @@
+# Ignore all markdown files
+*.md
+.env
+config/
+
+# But keep these ones
+!README.md
+!LICENSE.md
+
