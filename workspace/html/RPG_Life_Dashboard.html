@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RPG Life Dashboard</title>
+    <link rel="stylesheet" href="../css/styles.css">
+</head>
+<body>
+    <h1>RPG Life Dashboard</h1>
+    <div id="stats-container">
+        <div class="stat" id="strength">
+            <h3>Strength</h3>
+            <p>Level: <span class="level">1</span></p>
+            <div class="progress-bar">
+                <div class="progress"></div>
+            </div>
+            <p>XP: <span class="xp">0</span>/100</p>
+        </div>
+        <div class="stat" id="intelligence">
+            <h3>Intelligence</h3>
+            <p>Level: <span class="level">1</span></p>
+            <div class="progress-bar">
+                <div class="progress"></div>
+            </div>
+            <p>XP: <span class="xp">0</span>/100</p>
+        </div>
+        <div class="stat" id="creativity">
+            <h3>Creativity</h3>
+            <p>Level: <span class="level">1</span></p>
+            <div class="progress-bar">
+                <div class="progress"></div>
+            </div>
+            <p>XP: <span class="xp">0</span>/100</p>
+        </div>
+        <div class="stat" id="social">
+            <h3>Social</h3>
+            <p>Level: <span class="level">1</span></p>
+            <div class="progress-bar">
+                <div class="progress"></div>
+            </div>
+            <p>XP: <span class="xp">0</span>/100</p>
+        </div>
+    </div>
+    <div>
+        <button onclick="addXP('strength', 20)">Exercised 30min</button>
+        <button onclick="addXP('intelligence', 25)">Read 1 hour</button>
+        <button onclick="addXP('creativity', 20)">Created something</button>
+        <button onclick="addXP('social', 15)">Socialized</button>
+    </div>
+    <h3>Total Character Level: <span id="total-level">4</span></h3>
+    <button onclick="resetProgress()">Reset</button>
+    <script src="../js/script.js"></script>
+</body>
+</html>
